@@ -1,0 +1,66 @@
+﻿@page
+@model Q2.Pages.Services.ListModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Services List</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <div class="container mt-3">
+        <form id="fr_search" method="get" action="/Services/List">
+            <div class="mb-2">
+                <label for="in_roomTitle">Room Title:</label>
+                <input id="in_roomTitle" name="RoomTitle" type="text" class="form-control" value="@Model.RoomTitle"/>
+            </div>
+
+            <div class="mb-2">
+                <label for="in_feeType">Fee Type:</label>
+                <input id="in_feeType" name="FeeType" type="text" class="form-control" value="@Model.FeeType"/>
+            </div>
+
+            <button id="bt_submit" type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <table id="tb_services" class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Room Title</th>
+                    <th>Fee Type</th>
+                    <th>Month</th>
+                    <th>Year</th>
+                    <th>Amount</th>
+                    <th>Payment Status</th>
+                    <th>Employee</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.Services)
+                {
+                    var amount = (int) decimal.Round(s.Amount ?? 0m, 0, MidpointRounding.AwayFromZero);
+                    var paymentStatus = s.PaymentDate.HasValue ? "Service has been paid" : "Unpaid";
+                    var employeeName = s.EmployeeNavigation?.Name ?? "N/A";
+                    <tr>
+                        <td id="td_roomTitle_@s.Id">@s.RoomTitle</td>
+                        <td id="td_feeType_@s.Id">@s.FeeType</td>
+                        <td id="td_month_@s.Id">@s.Month</td>
+                        <td id="td_year_@s.Id">@s.Year</td>
+                        <td id="td_amount_@s.Id">@amount</td>
+                        <td id="td_paymentStatus_@s.Id">@paymentStatus</td>
+                        <td id="td_employee_@s.Id">@employeeName</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
