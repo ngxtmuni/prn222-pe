@@ -1,7 +1,0 @@
-**/.vs/
-**/.vscode/
-**/bin/
-**/obj/
-*.suo
-*.user
-.claude/

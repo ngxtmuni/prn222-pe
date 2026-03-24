@@ -1,0 +1,39 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+bin/
+obj/
+out/
+TestResults/
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
+
+# Node (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Local env / secrets
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+secrets.json
+
+# Claude local settings
+.claude/
