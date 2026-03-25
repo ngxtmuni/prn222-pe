@@ -28,16 +28,11 @@ while (true)
 
         writer.WriteLine(bookId);
         string? json = reader.ReadLine();
-        //Console.WriteLine(json);
-        //if (string.IsNullOrEmpty(json))
-        //{
-        //    Console.WriteLine($"Book tracking server is not running. Please try again later.");
-        //    continue;
-        //}
+        Console.WriteLine(json);
         ServerResponse? response = JsonSerializer.Deserialize<ServerResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        if (response == null)
+        if (response?.BookExists == false)
         {
-            Console.WriteLine("Book tracking server is not running. Please try again later.");
+            Console.WriteLine($"Book with ID {bookId} does not exist");
         }
 
         if (response?.BookExists == true && response.BorrowerRecords.Count == 0)
