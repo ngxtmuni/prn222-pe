@@ -19,7 +19,7 @@
                     <div>
                         <form method="get" asp-page="/Employee/List">
                             <select id="sl_department" asp-for="DepartmentId">
-                                <option id="op_0" value="0">Select one department</option>
+                                <option id="op_0" value="0" selected>Select one department</option>
                                 @foreach (var d in Model.Departments)
                                 {
                                     if (Model.DepartmentId == d.DepartmentId)
@@ -32,7 +32,7 @@
                                     }
                                 }
                             </select>
-                            <button type="submit" id="bt_filter">Filter</button>
+                            <input type="submit" id="bt_filter" value="Filter">
                         </form>
                     </div>
 
@@ -68,7 +68,15 @@
                             </table>
                         </div>
                         <div style="width:30%;float:left">
-                            <h2>Skills of employee "John Doe":</h2>
+                            @{
+                                // Tìm object nhân viên
+                                var employeeFind = Model.Employees.FirstOrDefault(e => e.EmployeeId == Model.EmployeeId);
+
+                                // Lấy tên, nếu không thấy thì để là "Unknown" hoặc để trống
+                                var displayName = employeeFind != null ? employeeFind.Name : "Unknown";
+                            }
+
+                            <h2>Skills of employee "@displayName":</h2>
                             <table>
                                 <tr>
                                     <th>Skill Name</th>
@@ -77,7 +85,7 @@
                                 </tr>
                                 @foreach (var e in Model.EmployeeSkill)
                                 {
-                                    var date = e.AcquiredDate?.ToString("dd-MM-yy") ?? "";
+                                    var date = e.AcquiredDate?.ToString("dd-MM-yy") ?? "No content";
                                     <tr>
                                         <td id="td_skillName_@e.SkillId">@e.Skill.SkillName</td>
                                         <td id="td_proficiencyLevel_@e.SkillId">@e.ProficiencyLevel</td>
