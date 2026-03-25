@@ -1,0 +1,96 @@
+﻿@page
+@model Q2.Pages.Employee.ListModel
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div b-b4snup7eis class="container">
+        <main b-b4snup7eis role="main" class="pb-3">
+            <div class="text-center">
+                <h1 class="display-4">Employee List Page</h1>
+                <div>
+                    <div>
+                        <form method="get" asp-page="/Employee/List">
+                            <select id="sl_department" asp-for="DepartmentId">
+                                <option id="op_0" value="0">Select one department</option>
+                                @foreach (var d in Model.Departments)
+                                {
+                                    if (Model.DepartmentId == d.DepartmentId)
+                                    {
+                                        <option id="op_@d.DepartmentId" value="@d.DepartmentId" selected>@d.DepartmentName</option>
+                                    }
+                                    else
+                                    {
+                                        <option id="op_@d.DepartmentId" value="@d.DepartmentId">@d.DepartmentName</option>
+                                    }
+                                }
+                            </select>
+                            <button type="submit" id="bt_filter">Filter</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div style="width:70%;float:left">
+                            <h2>Employee List:</h2>
+                            <table>
+                                <tr>
+                                    <th>EmployeeName</th>
+                                    <th>DateOfBirth</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>HireDate</th>
+                                    <th></th>
+                                </tr>
+                                @foreach (var employee in Model.Employees)
+                                {
+                                    var dob = employee.Dob?.ToString("dd-MM-yy") ?? "";
+                                    var hiredDate = employee.HireDate?.ToString("dd-MM-yy") ?? "";
+                                    <tr>
+                                        <td id="td_employeeName_@employee.EmployeeId">@employee.Name</td>
+                                        <td id="td_dateOfBirth_@employee.EmployeeId">@dob</td>
+                                        <td id="td_department_@employee.EmployeeId">@employee.Department?.DepartmentName</td>
+                                        <td id="td_position_@employee.EmployeeId">@employee.Position</td>
+                                        <td id="td_hireDate_@employee.EmployeeId">@hiredDate</td>
+                                        <td>
+                                            <a id="a_@employee.EmployeeId" asp-page="/Employee/List"
+                                               asp-route-DepartmentId="@Model.DepartmentId"
+                                               asp-route-EmployeeId="@employee.EmployeeId">View skills</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div style="width:30%;float:left">
+                            <h2>Skills of employee "John Doe":</h2>
+                            <table>
+                                <tr>
+                                    <th>Skill Name</th>
+                                    <th>ProficiencyLevel</th>
+                                    <th>AcquiredDate</th>
+                                </tr>
+                                @foreach (var e in Model.EmployeeSkill)
+                                {
+                                    var date = e.AcquiredDate?.ToString("dd-MM-yy") ?? "";
+                                    <tr>
+                                        <td id="td_skillName_@e.SkillId">@e.Skill.SkillName</td>
+                                        <td id="td_proficiencyLevel_@e.SkillId">@e.ProficiencyLevel</td>
+                                        <td id="td_acquiredDate_@e.SkillId">@date</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>
