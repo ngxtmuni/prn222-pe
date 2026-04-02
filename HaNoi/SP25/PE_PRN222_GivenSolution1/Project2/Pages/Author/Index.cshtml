@@ -1,0 +1,108 @@
+﻿@page "{id:int}"
+@model Project2.Pages.Author.IndexModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Author's detail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        h2 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            border-bottom: 2px solid #000;
+            padding: 10px 5px;
+        }
+
+        td {
+            padding: 12px 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .btn-remove {
+            padding: 6px 12px;
+            border: 2px solid #333;
+            background: white;
+            cursor: pointer;
+        }
+
+        .caption {
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Author's detail</h1>
+
+    <p><strong>AuthorId:</strong> @Model.Author?.AuthorId</p>
+    <p><strong>Author’s name:</strong> @Model.Author?.Name</p>
+    <p><strong>Birth year:</strong> @Model.Author?.BirthYear</p>
+
+    <h2>Books:</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>BookId</th>
+                <th>Book’s title</th>
+                <th>Publication year</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model.Books)
+            {
+                <tr>
+                    <td>@b.BookId</td>
+                    <td>@b.Title</td>
+                    <td>@b.PublicationYear</td>
+                    <td>
+                        <form method="post"
+                              asp-page-handler="RemoveAuthor"
+                              asp-route-authorId="@Model.Author!.AuthorId"
+                              asp-route-bookId="@b.BookId">
+                              <button class="btn-remove" type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="caption">Figure 3. The Author Detail Page.</div>
+</body>
+</html>

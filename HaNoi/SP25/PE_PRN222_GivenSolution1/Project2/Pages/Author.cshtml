@@ -1,0 +1,94 @@
+﻿@page
+@model Project2.Pages.AuthorModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List of authors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .filter-box {
+            margin-bottom: 15px;
+        }
+
+        .filter-box label,
+        .filter-box select,
+        .filter-box button {
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            border-bottom: 2px solid #000;
+            padding: 8px 5px;
+        }
+
+        td {
+            padding: 10px 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        a {
+            color: #4a76a8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>List of authors</h1>
+
+    <form class="filter-box" method="get" action="#">
+        <label for="book">Filter by book</label>
+        <select id="book" asp-for="BookId">
+            <option id="op_0" value="0" selected="@(Model.BookId == 0)">All books</option>
+            @foreach (var book in Model.Books)
+            {
+                <option value="@book.BookId" selected="@(Model.BookId == book.BookId)">@book.Title</option>
+            }
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>AuthorId</th>
+                <th>Name</th>
+                <th>Birth Year</th>
+                <th>Books</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model.Authors)
+            {
+                <tr>
+                    <td>@a.AuthorId</td>
+                    <td>@a.Name</td>
+                    <td>@a.BirthYear</td>
+                    <td>@string.Join(", ", a.Books.Select(b => b.Title))</td>
+                    <td><a href="/Author/@a.AuthorId">View Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
