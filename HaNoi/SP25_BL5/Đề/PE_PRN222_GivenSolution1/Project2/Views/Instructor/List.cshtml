@@ -1,0 +1,45 @@
+﻿@model List<Project2.Models.Instructor>
+@{
+    var departments = ViewBag.Departments as List<Project2.Models.Department>;
+    var selectedDepartment = ViewBag.SelectedDepartment as string;
+    var selectedContract = ViewBag.SelectedContract as string;
+    var selectedSort = ViewBag.SelectedSort as string;
+}
+
+<form method="get">
+    Department
+    <select id="sl_de" name="departmentId">
+        @foreach (var dept in departments)
+        {
+            <option id="de_@dept.DepartmentId" value="@dept.DepartmentId" @(selectedDepartment == dept.DepartmentId.ToString() ? "selected" : "")>
+                @dept.DepartmentName
+            </option>
+        }
+    </select>
+
+    Contract Type
+    <select id="sl_contract" name="contractType">
+        <option id="con_full" value="Fulltime" @(selectedContract == "Fulltime" ? "selected" : "")>Fulltime</option>
+        <option id="con_part" value="Parttime" @(selectedContract == "Parttime" ? "selected" : "")>Parttime</option>
+    </select>
+    <br />
+    Sort by:
+    <input type="radio" name="sortBy" value="InstructorName" id="rd_instructorName" @(selectedSort == null || selectedSort == "InstructorName" ? "checked" : "") /> InstructorName &nbsp;
+    <input type="radio" name="sortBy" value="InstructorId" id="rd_instructorId" @(selectedSort == "InstructorId" ? "checked" : "") /> InstructorId &nbsp;
+    <input type="radio" name="sortBy" value="ContractDate" id="rd_contractDate" @(selectedSort == "ContractDate" ? "checked" : "") /> ContractDate &nbsp;
+    <br />
+    <input type="submit" value="Filter" id="btn_submit" />
+</form>
+
+<h2>List of Instructors</h2>
+<table border="1">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <tr>
+            <td id="td_instructorId_@i">@Model[i].InstructorId</td>
+            <td id="td_fullName_@i">@Model[i].Fullname</td>
+            <td id="td_department_@i">@Model[i].DepartmentNavigation?.DepartmentName</td>
+            <td id="td_contractDate_@i">@Model[i].ContractDate?.ToString("dd/MM/yyyy")</td>
+        </tr>
+    }
+</table>
