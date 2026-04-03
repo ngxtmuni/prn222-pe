@@ -5,17 +5,16 @@ while (true)
 {
     Console.Write("Enter Book ID (or press Enter to exit): ");
     string? input = Console.ReadLine();
-
     if (string.IsNullOrEmpty(input))
     {
-        Console.WriteLine("Goodbye ! Book tracking client is shutting down");
+        Console.WriteLine("Goodbye! Book tracking client is shutting down.");
         break;
     }
 
     if (!int.TryParse(input, out int bookId) || bookId <= 0)
     {
-            Console.WriteLine("Invalid input! Please enter a valid Book ID (positive integer).");
-            continue;
+        Console.WriteLine("Invalid input ! Please enter a valid Book ID (positive integer)");
+        continue;
     }
 
     try
@@ -28,7 +27,6 @@ while (true)
 
         writer.WriteLine(bookId);
         string? json = reader.ReadLine();
-        Console.WriteLine(json);
         ServerResponse? response = JsonSerializer.Deserialize<ServerResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         if (response?.BookExists == false)
         {
@@ -44,7 +42,7 @@ while (true)
         {
             Console.WriteLine($"=== Borrower History for Book ID: {bookId}");
             var records = response.BorrowerRecords;
-            for (int i = 0 ; i < records.Count; i++)
+            for (int i = 0; i < records.Count; i++)
             {
                 var record = records[i];
                 Console.WriteLine($"Reader ID: {record.ReaderID}");
@@ -59,8 +57,6 @@ while (true)
                 }
             }
         }
-
-
     }
     catch (SocketException)
     {
@@ -72,6 +68,13 @@ while (true)
     }
 }
 
+public class ServerResponse
+{
+    public bool BookExists { get; set; }
+    public string BookTitle { get; set; } = "";
+    public List<BorrowerRecord> BorrowerRecords { get; set; } = new List<BorrowerRecord>();
+}
+
 public class BorrowerRecord
 {
     public int ReaderID { get; set; }
@@ -80,11 +83,4 @@ public class BorrowerRecord
     public DateTime BorrowDate { get; set; }
     public DateTime? ReturnDate { get; set; }
     public string Status { get; set; } = "";
-}
-
-public class ServerResponse
-{
-    public bool BookExists { get; set; }
-    public string BookTitle { get; set; } = "";
-    public List<BorrowerRecord> BorrowerRecords { get; set; } = new List<BorrowerRecord>();
 }
