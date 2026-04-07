@@ -1,0 +1,51 @@
+@page "{id:int}"
+@model Q2.Pages.Customer.DetailModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Detail</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Customer Detail</h2>
+        @if (Model.Customer == null)
+        {
+            <div class="alert alert-danger">
+                Customer not found.
+            </div>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <tr>
+                    <th style="width:200px;">Customer Id</th>
+                    <td id="td_customerId">@Model.Customer.CustomerId</td>
+                </tr>
+                <tr>
+                    <th>Customer Name</th>
+                    <td id="td_customerName">@Model.Customer.CustomerName</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td id="td_email">@Model.Customer.Email</td>
+                </tr>
+                <tr>
+                    <th>City</th>
+                    <td id="td_city">@Model.Customer.City</td>
+                </tr>
+            </table>
+            <div class="mt-3">
+                <a id="btn_update" href="/Customer/Update/@Model.Customer.CustomerId" class="btn btn-primary">Update</a>
+                <a id="btn_back" href="/Customer/List" class="btn btn-secondary">Back to List</a>
+            </div>
+        }
+    </div>
+</body>
+</html>

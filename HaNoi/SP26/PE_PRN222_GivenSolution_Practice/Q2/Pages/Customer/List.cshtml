@@ -1,0 +1,120 @@
+﻿@page
+@model Q2.Pages.Customer.ListModel
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer List - PRN222_q21</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css?v=pAGv4ietcJNk_EwsQZ5BN9-K4MuNYS2a9wl4Jw-q9D0" />
+    <link rel="stylesheet" href="/PRN222_q21.styles.css?v=C5BrL86Td0ykd_rrvxvkPCjzPKElFVhidrs7-AELi5g" />
+</head>
+<body>
+
+    <div b-mv4h914u0x class="container">
+        <main b-mv4h914u0x role="main" class="pb-3">
+
+
+            <h2>Customer List</h2>
+
+            <div style="margin-bottom:12px;">
+                <a id="lnk_addNew" href="/Customer/Create">Add New Customer</a>
+            </div>
+
+            <form method="get" style="margin-bottom:12px;" action="">
+
+                <select id="sl_city" asp-for="CitySelected">
+                    <option id="opt_default" value="" selected="@(string.IsNullOrEmpty(Model.CitySelected))">All Cities</option>
+                    @for (int i = 0; i < Model.Cities.Count(); i++) 
+                    {
+                        var cityName = Model.Cities[i];
+                        if (string.Equals(Model.CitySelected, cityName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            <option id="opt_@i" value="@cityName" selected>@cityName</option>
+                        }
+                        else
+                        {
+                            <option id="op_@i" value="@cityName">@cityName</option>
+                        }
+                    }
+                </select>
+
+                <button type="submit" id="btn_filter">Filter</button>
+            </form>
+
+            <table border="1" cellpadding="6" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>CustomerId</th>
+                        <th>CustomerName</th>
+                        <th>Email</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var customer in Model.Customers)
+                    {
+                        <tr>
+                            <td id="td_customerId_@customer.CustomerId">@customer.CustomerId</td>
+                            <td id="td_customerName_@customer.CustomerId">
+                                <a id="a_@customer.CustomerId" asp-page="/Customer/Detail" asp-route-id="@customer.CustomerId">@customer.CustomerName</a>
+                            </td>
+                            <td id="td_email_@customer.CustomerId">@customer.Email</td>
+                            <td id="td_city_@customer.CustomerId">@customer.City</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div style="margin-top:20px;">
+                <h3>Orders</h3>
+                @{
+                    var orderCount = Model.Orders.Count();
+                    var totalAmount = Model.Orders.Sum(e => e.TotalAmount);
+                }
+                <div style="margin-bottom:10px;">
+                    Order Count: <span id="span_orderCount">@orderCount</span>
+                    |
+                    Total Amount: <span id="span_totalAmount">@totalAmount</span>
+                </div>
+                <table border="1" cellpadding="6" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>OrderId</th>
+                            <th>OrderDate</th>
+                            <th>TotalAmount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders)
+                        {
+                            <tr>
+                                <td id="td_orderId_@order.OrderId">@order.OrderId</td>
+                                <td id="td_orderDate_@order.OrderId">@order.OrderDate</td>
+                                <td id="td_totalAmount_@order.OrderId">@order.TotalAmount</td>
+                                <td id="td_status_@order.OrderId">@order.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+        </main>
+    </div>
+
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js?v=hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo"></script>
+
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+</body>
+</html>

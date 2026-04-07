@@ -1,0 +1,80 @@
+@page "{id:int}"
+@model Q2.Pages.Customer.UpdateModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Customer - Q2</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css?v=pAGv4ietcJNk_EwsQZ5BN9-K4MuNYS2a9wl4Jw-q9D0" />
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Update Customer</h2>
+
+        @if (Model.Customer == null)
+        {
+            <div class="alert alert-danger">Customer not found.</div>
+            <div class="mt-3">
+                <a id="btn_back" href="/Customer/List" class="btn btn-secondary">Back to List</a>
+            </div>
+        }
+        else
+        {
+            <form method="post">
+                <input type="hidden" asp-for="CustomerId" />
+
+                <div style="margin-bottom:10px;">
+                    <label for="txt_customerId">Customer Id</label><br />
+                    <input type="text" id="txt_customerId" value="@Model.CustomerId" readonly />
+                </div>
+
+                <div style="margin-bottom:10px;">
+                    <label for="txt_customerName">Customer Name</label><br />
+                    <input type="text" id="txt_customerName" asp-for="CustomerName" />
+                </div>
+
+                <div style="margin-bottom:10px;">
+                    <label for="txt_email">Email</label><br />
+                    <input type="text" id="txt_email" asp-for="Email" />
+                </div>
+
+                <div style="margin-bottom:10px;">
+                    <label for="sl_city">City</label><br />
+                    <select id="sl_city" asp-for="CitySelected">
+                        @for (int i = 0; i < Model.Cities.Count; i++)
+                        {
+                            var cityName = Model.Cities[i];
+                            if (string.Equals(Model.CitySelected, cityName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                <option id="opt_@i" value="@cityName" selected>@cityName</option>
+                            }
+                            else
+                            {
+                                <option id="op_@i" value="@cityName">@cityName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div asp-validation-summary="All" style="color:red"></div>
+
+                <div style="margin-top:12px;">
+                    <button type="submit" id="btn_update">Update</button>
+                    <a id="btn_detail" href="/Customer/Detail/@Model.CustomerId">Back to Detail</a>
+                    <a id="btn_list" href="/Customer/List">Back to List</a>
+                </div>
+            </form>
+        }
+    </div>
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js?v=hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo"></script>
+</body>
+</html>
