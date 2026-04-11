@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Book List</title>
+</head>
+<body>
+    <h2>Book List</h2>
+
+    <form method="get">
+        <input type="text" name="keyword" placeholder="Search title" />
+        <select name="authorId">
+            <option value="">All Authors</option>
+            <option value="1">George Orwell</option>
+            <option value="2">Jane Austen</option>
+            <option value="3">Harper Lee</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Publish Year</th>
+                <th>Author</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1984</td>
+                <td>1949</td>
+                <td>George Orwell</td>
+                <td><a href="">Update</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

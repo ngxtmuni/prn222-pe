@@ -1,0 +1,554 @@
+1. Q1 – Console Client hoàn chỉnh
+File: Program.cs
+using System.Net.Sockets;
+using System.Text;
+using System.Text.Json;
+
+namespace Q1_BookTrackingClient
+{
+    internal class Program
+    {
+        private const string Host = "127.0.0.1";
+        private const int Port = 4000;
+
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        static async Task Main(string[] args)
+        {
+            while (true)
+            {
+                Console.Write("Enter Book ID (or press Enter to exit): ");
+                string? input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    Console.WriteLine("Goodbye! Book tracking client is shutting down.");
+                    break;
+                }
+
+                if (!int.TryParse(input, out int bookId) || bookId <= 0)
+                {
+                    Console.WriteLine("Invalid input! Please enter a valid Book ID (positive integer).");
+                    continue;
+                }
+
+                try
+                {
+                    string jsonResponse = await SendBookIdToServerAsync(bookId);
+                    ProcessServerResponse(jsonResponse, bookId);
+                }
+                catch
+                {
+                    Console.WriteLine("Book tracking server is not running. Please try again later.");
+                }
+            }
+        }
+
+        private static async Task<string> SendBookIdToServerAsync(int bookId)
+        {
+            using TcpClient client = new();
+            await client.ConnectAsync(Host, Port);
+
+            using NetworkStream stream = client.GetStream();
+            using StreamWriter writer = new(stream, Encoding.UTF8, leaveOpen: true);
+            using StreamReader reader = new(stream, Encoding.UTF8, leaveOpen: true);
+
+            writer.AutoFlush = true;
+
+            await writer.WriteLineAsync(bookId.ToString());
+
+            string response = await reader.ReadToEndAsync();
+            return response.Trim();
+        }
+
+        private static void ProcessServerResponse(string json, int bookId)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                Console.WriteLine("No response from server.");
+                return;
+            }
+
+            try
+            {
+                using JsonDocument doc = JsonDocument.Parse(json);
+                JsonElement root = doc.RootElement;
+
+                // Case 1: server trả []
+                if (root.ValueKind == JsonValueKind.Array)
+                {
+                    List<BorrowerInfo>? borrowers =
+                        JsonSerializer.Deserialize<List<BorrowerInfo>>(json, JsonOptions);
+
+                    if (borrowers == null || borrowers.Count == 0)
+                    {
+                        Console.WriteLine($"No borrower records found for Book ID {bookId}.");
+                        return;
+                    }
+
+                    Console.WriteLine($"=== Borrower History for Book ID: {bookId}");
+
+                    foreach (var item in borrowers)
+                    {
+                        Console.WriteLine($"Reader ID: {item.ReaderId}");
+                        Console.WriteLine($"Full Name: {item.FullName}");
+                        Console.WriteLine($"Email: {item.Email}");
+                        Console.WriteLine($"Borrow Date: {item.BorrowDate:yyyy-MM-dd}");
+                        Console.WriteLine($"Return Date: {(item.ReturnDate.HasValue ? item.ReturnDate.Value.ToString("yyyy-MM-dd") : "Not returned yet")}");
+                        Console.WriteLine($"Status: {item.Status}");
+                        Console.WriteLine("---");
+                    }
+
+                    return;
+                }
+
+                // Case 2: server trả object kiểu { "message": "Book not found" }
+                if (root.ValueKind == JsonValueKind.Object)
+                {
+                    if (root.TryGetProperty("message", out JsonElement messageElement))
+                    {
+                        string? message = messageElement.GetString();
+
+                        if (!string.IsNullOrWhiteSpace(message) &&
+                            message.Contains("book not found", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine($"Book with ID {bookId} does not exist.");
+                            return;
+                        }
+
+                        Console.WriteLine(message);
+                        return;
+                    }
+                }
+
+                // fallback nếu server trả text lạ
+                if (json.Contains("book not found", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Book with ID {bookId} does not exist.");
+                    return;
+                }
+
+                Console.WriteLine(json);
+            }
+            catch
+            {
+                if (json.Contains("book not found", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Book with ID {bookId} does not exist.");
+                    return;
+                }
+
+                Console.WriteLine("Invalid response from server.");
+            }
+        }
+    }
+
+    public class BorrowerInfo
+    {
+        public int ReaderId { get; set; }
+        public string FullName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public DateTime BorrowDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
+        public string Status { get; set; } = "";
+    }
+}
+2. Q2 – Razor Pages hoàn chỉnh
+2.1 appsettings.json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=YourDatabaseName;Trusted_Connection=True;TrustServerCertificate=True"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
+2.2 Program.cs
+using Microsoft.EntityFrameworkCore;
+using YourProject.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<YourDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyCnn")));
+
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+}
+
+app.MapGet("/", () => Results.Redirect("/Contract/List"));
+app.UseStaticFiles();
+app.UseRouting();
+
+app.MapRazorPages();
+
+app.Run();
+2.3 Data/YourDbContext.cs
+
+Nếu bạn đã scaffold từ DB thì dùng file scaffold sẵn. Nếu cần mẫu:
+
+using Microsoft.EntityFrameworkCore;
+using YourProject.Models;
+
+namespace YourProject.Data
+{
+    public class YourDbContext : DbContext
+    {
+        public YourDbContext(DbContextOptions<YourDbContext> options) : base(options)
+        {
+        }
+
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
+    }
+}
+2.4 Models mẫu
+
+Nếu bạn đã scaffold DB rồi thì bỏ qua phần này. Nếu chưa có, đây là mẫu tối thiểu.
+
+Models/Employee.cs
+namespace YourProject.Models
+{
+    public class Employee
+    {
+        public int EmployeeId { get; set; }
+        public string Name { get; set; } = "";
+        public DateTime Dob { get; set; }
+        public int DepartmentId { get; set; }
+        public string? Position { get; set; }
+        public DateTime HireDate { get; set; }
+
+        public Department? Department { get; set; }
+        public ICollection<EmployeeSkill> EmployeeSkills { get; set; } = new List<EmployeeSkill>();
+    }
+}
+Models/Department.cs
+namespace YourProject.Models
+{
+    public class Department
+    {
+        public int DepartmentId { get; set; }
+        public string DepartmentName { get; set; } = "";
+
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+    }
+}
+Models/Skill.cs
+namespace YourProject.Models
+{
+    public class Skill
+    {
+        public int SkillId { get; set; }
+        public string SkillName { get; set; } = "";
+        public string? Description { get; set; }
+
+        public ICollection<EmployeeSkill> EmployeeSkills { get; set; } = new List<EmployeeSkill>();
+    }
+}
+Models/EmployeeSkill.cs
+namespace YourProject.Models
+{
+    public class EmployeeSkill
+    {
+        public int EmployeeId { get; set; }
+        public int SkillId { get; set; }
+        public string? ProficiencyLevel { get; set; }
+        public DateTime? AcquiredDate { get; set; }
+
+        public Employee? Employee { get; set; }
+        public Skill? Skill { get; set; }
+    }
+}
+2.5 Pages/Employee/List.cshtml.cs
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using YourProject.Data;
+using YourProject.Models;
+
+namespace YourProject.Pages.Employee
+{
+    public class ListModel : PageModel
+    {
+        private readonly YourDbContext _context;
+
+        public ListModel(YourDbContext context)
+        {
+            _context = context;
+        }
+
+        public List<Department> Departments { get; set; } = new();
+        public List<Models.Employee> Employees { get; set; } = new();
+        public List<EmployeeSkill> EmployeeSkills { get; set; } = new();
+
+        [BindProperty(SupportsGet = true)]
+        public int DepartmentId { get; set; } = 0;
+
+        [BindProperty(SupportsGet = true)]
+        public int? EmployeeId { get; set; }
+
+        public string SelectedEmployeeName { get; set; } = "";
+
+        public async Task OnGetAsync()
+        {
+            Departments = await _context.Departments
+                .OrderBy(d => d.DepartmentName)
+                .ToListAsync();
+
+            IQueryable<Models.Employee> employeeQuery = _context.Employees
+                .Include(e => e.Department);
+
+            if (DepartmentId > 0)
+            {
+                employeeQuery = employeeQuery.Where(e => e.DepartmentId == DepartmentId);
+            }
+
+            Employees = await employeeQuery
+                .OrderBy(e => e.Name)
+                .ToListAsync();
+
+            if (EmployeeId.HasValue)
+            {
+                Models.Employee? employee = await _context.Employees
+                    .FirstOrDefaultAsync(e => e.EmployeeId == EmployeeId.Value);
+
+                if (employee != null)
+                {
+                    SelectedEmployeeName = employee.Name;
+
+                    EmployeeSkills = await _context.EmployeeSkills
+                        .Where(es => es.EmployeeId == EmployeeId.Value)
+                        .Include(es => es.Skill)
+                        .OrderBy(es => es.Skill!.SkillName)
+                        .ToListAsync();
+                }
+            }
+        }
+    }
+}
+2.6 Pages/Employee/List.cshtml
+@page "/Employee/List"
+@model YourProject.Pages.Employee.ListModel
+
+@{
+    ViewData["Title"] = "Employee List Page";
+}
+
+<h1>Employee List Page</h1>
+
+<form method="get">
+    <select id="sl_department" name="departmentId">
+        <option id="op_0" value="0" selected="@(Model.DepartmentId == 0 ? "selected" : null)">
+            Select one department
+        </option>
+
+        @foreach (var d in Model.Departments)
+        {
+            <option id="op_@d.DepartmentId"
+                    value="@d.DepartmentId"
+                    selected="@(Model.DepartmentId == d.DepartmentId ? "selected" : null)">
+                @d.DepartmentName
+            </option>
+        }
+    </select>
+
+    <input type="submit" id="bt_filter" value="Filter" />
+</form>
+
+<div style="display:flex; gap:40px; align-items:flex-start; margin-top:20px;">
+    <div style="flex: 1;">
+        <h2>Employee List:</h2>
+
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>EmployeeName</th>
+                    <th>DateOfBirth</th>
+                    <th>Department</th>
+                    <th>Position</th>
+                    <th>HireDate</th>
+                    <th>ViewSkills</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model.Employees)
+                {
+                    <tr>
+                        <td id="td_employeeName_@e.EmployeeId">@e.Name</td>
+                        <td id="td_dateOfBirth_@e.EmployeeId">@e.Dob.ToString("dd/MM/yyyy")</td>
+                        <td id="td_department_@e.EmployeeId">@e.Department?.DepartmentName</td>
+                        <td id="td_position_@e.EmployeeId">@e.Position</td>
+                        <td id="td_hireDate_@e.EmployeeId">@e.HireDate.ToString("dd/MM/yyyy")</td>
+                        <td id="td_viewSkills_@e.EmployeeId">
+                            <a id="a_@e.EmployeeId"
+                               asp-page="/Employee/List"
+                               asp-route-departmentId="@Model.DepartmentId"
+                               asp-route-employeeId="@e.EmployeeId">
+                                View skills
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div style="width: 350px;">
+        @if (Model.EmployeeId.HasValue)
+        {
+            <h2>Skills of employee "@Model.SelectedEmployeeName":</h2>
+
+            <table border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>SkillName</th>
+                        <th>ProficiencyLevel</th>
+                        <th>AcquiredDate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model.EmployeeSkills)
+                    {
+                        <tr>
+                            <td id="td_skillName_@s.SkillId">@s.Skill?.SkillName</td>
+                            <td id="td_proficiencyLevel_@s.SkillId">
+                                @(string.IsNullOrWhiteSpace(s.ProficiencyLevel) ? "No content" : s.ProficiencyLevel)
+                            </td>
+                            <td id="td_acquiredDate_@s.SkillId">
+                                @(s.AcquiredDate.HasValue ? s.AcquiredDate.Value.ToString("dd/MM/yyyy") : "No content")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+3. Danh sách id bắt buộc để tự check trước khi nộp
+
+Theo đề, đây là phần rất dễ mất điểm nếu sai.
+
+Employee list
+td_employeeName_{employeeId}
+td_dateOfBirth_{employeeId}
+td_department_{employeeId}
+td_position_{employeeId}
+td_hireDate_{employeeId}
+td_viewSkills_{employeeId}
+a_{employeeId}
+Skills list
+td_skillName_{skillId}
+td_proficiencyLevel_{skillId}
+td_acquiredDate_{skillId}
+Filter
+sl_department
+op_0
+op_{departmentId}
+bt_filter
+4. Nếu entity scaffold của bạn tên khác thì sửa chỗ nào
+
+Ví dụ scaffold hay sinh ra:
+
+DOB thay vì Dob
+EmployeeSkills thành Employee_Skills
+DepartmentName thành Name
+
+Thì bạn chỉ cần sửa các chỗ này:
+
+Trong List.cshtml.cs
+_context.Employees
+_context.Departments
+_context.EmployeeSkills
+
+e.DepartmentId
+e.Name
+e.Dob
+e.HireDate
+
+es.Skill
+es.ProficiencyLevel
+es.AcquiredDate
+Trong List.cshtml
+@e.Name
+@e.Dob.ToString("dd/MM/yyyy")
+@e.Department?.DepartmentName
+@e.Position
+@e.HireDate.ToString("dd/MM/yyyy")
+
+@s.Skill?.SkillName
+@s.ProficiencyLevel
+@s.AcquiredDate
+5. Lệnh scaffold DB nếu cần
+
+Nếu đề cho DB script và bạn muốn scaffold nhanh:
+
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+
+Scaffold:
+
+Scaffold-DbContext "Server=.;Database=YourDatabaseName;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Data -Context YourDbContext -DataAnnotations -Force
+
+Hoặc CLI:
+
+dotnet ef dbcontext scaffold "Server=.;Database=YourDatabaseName;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context YourDbContext --data-annotations --force
+6. Quick checklist trước khi publish
+Q1
+chạy được khi server on
+nhập abc, -1, 0 đều báo invalid
+Enter rỗng thoát
+server off báo đúng lỗi
+book không tồn tại báo đúng
+list rỗng báo đúng
+list có dữ liệu in đúng format
+Q2
+URL đúng /Employee/List
+connection string nằm trong appsettings.json
+Filter hoạt động
+View skills hoạt động
+ngày đúng dd/MM/yyyy
+null hiện "No content"
+tất cả id HTML đúng
+7. Mẫu publish đúng format đề
+dotnet publish -c Release -o ./Q1_yourstudentaccount
+dotnet publish -c Release -o ./Q2_yourstudentaccount
+8. Nếu muốn làm siêu an toàn cho Q2
+
+Bạn có thể thêm _ViewImports.cshtml:
+
+Pages/_ViewImports.cshtml
+@using YourProject
+@using YourProject.Models
+@namespace YourProject.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+using TcpClient client = new();
+await client.ConnectAsync("127.0.0.1", 5000);
+using NetworkStream stream = client.GetStream();
+byte[] requestBytes = System.Text.Encoding.UTF8.GetBytes(input ?? "");
+await stream.WriteAsync(requestBytes);
+await stream.FlushAsync();
+client.Client.Shutdown(SocketShutdown.Send);
+using MemoryStream ms = new();
+byte[] buffer = new byte[1024];
+int bytesRead;
+while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
+{
+    await ms.WriteAsync(buffer.AsMemory(0, bytesRead));
+}

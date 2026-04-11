@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Customer List</title>
+</head>
+<body>
+    <h2>Customer List</h2>
+
+    <div style="margin-bottom:12px;">
+        <form method="get">
+            <label for="sl_city">City</label>
+            <select id="sl_city" name="city">
+                <option value="">All Cities</option>
+                <option value="Ha Noi">Ha Noi</option>
+                <option value="Da Nang">Da Nang</option>
+                <option value="Hai Phong">Hai Phong</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>CustomerId</th>
+                <th>CustomerName</th>
+                <th>Email</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><a href="">Nguyen Van A</a></td>
+                <td>a@gmail.com</td>
+                <td>Ha Noi</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

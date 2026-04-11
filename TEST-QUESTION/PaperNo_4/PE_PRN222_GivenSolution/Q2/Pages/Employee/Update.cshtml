@@ -1,0 +1,54 @@
+﻿@page "{id:int}"
+@model Q2.Pages.Employee.UpdateModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Employee</title>
+</head>
+<body>
+    <h2>Update Employee</h2>
+    <div asp-validation-summary="All" style="color:red;"></div>
+    <form method="post">
+        <input type="hidden" asp-for="EmployeeId" />
+        <div>
+            <label>Employee Name</label><br />
+            <input type="text" asp-for="EmployeeNameSelected" readonly />
+        </div>
+        <div>
+            <label>Position</label><br />
+            <input type="text" asp-for="PositionSelected" />
+        </div>
+        <div>
+            <label>Department</label><br />
+            <select asp-for="DepartmentId">
+                @for (int i = 0; i < Model.Departments.Count; i++)
+                {
+                    var d = Model.Departments[i];
+                    var isSelected = Model.DepartmentId == d.DepartmentId || (!Model.DepartmentId.HasValue && i == 0);
+                    if (isSelected)
+                    {
+                        <option value="@d.DepartmentId" selected>@d.DepartmentName</option>
+                    }
+                    else
+                    {
+                        <option value="@d.DepartmentId">@d.DepartmentName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <label>Hire Date</label><br />
+            <input type="date" asp-for="HireDateSelected" />
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit">Save</button>
+            <a href="">Back to List</a>
+        </div>
+    </form>
+</body>
+</html>

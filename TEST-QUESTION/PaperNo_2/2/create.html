@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Create Contract</title>
+</head>
+<body>
+    <h2>Create Contract</h2>
+
+    <form method="post">
+        <div>
+            <label>Contract Title</label><br />
+            <input type="text" name="ContractTitle" />
+        </div>
+        <div>
+            <label>Property Type</label><br />
+            <select name="PropertyType">
+                <option value="">Select one</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Land">Land</option>
+                <option value="Villa">Villa</option>
+            </select>
+        </div>
+        <div>
+            <label>Signing Date</label><br />
+            <input type="date" name="SigningDate" />
+        </div>
+        <div>
+            <label>Expiration Date</label><br />
+            <input type="date" name="ExpirationDate" />
+        </div>
+        <div>
+            <label>Broker</label><br />
+            <select name="BrokerId">
+                <option value="1">Nguyen Thanh Dat</option>
+                <option value="2">Tran Thi Hong</option>
+                <option value="3">Le Minh Khang</option>
+            </select>
+        </div>
+        <div>
+            <label>Value</label><br />
+            <input type="number" name="Value" />
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit">Save</button>
+            <a href="">Back to List</a>
+        </div>
+    </form>
+</body>
+</html>

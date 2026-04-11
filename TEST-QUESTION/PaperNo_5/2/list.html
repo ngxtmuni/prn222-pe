@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Product List</title>
+</head>
+<body>
+    <h2>Product List</h2>
+    <div><a href="">Add New Product</a></div>
+
+    <form method="get">
+        <label>Category</label>
+        <select name="categoryId">
+            <option value="">All</option>
+            <option value="1">Electronics</option>
+            <option value="2">Clothing</option>
+            <option value="3">Food</option>
+        </select>
+
+        <label>Sort By</label>
+        <input type="radio" name="sortBy" value="ProductName" /> Name
+        <input type="radio" name="sortBy" value="Price" /> Price
+
+        <button type="submit">Apply</button>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Laptop</td>
+                <td>1200.00</td>
+                <td>10</td>
+                <td>Active</td>
+                <td>Electronics</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

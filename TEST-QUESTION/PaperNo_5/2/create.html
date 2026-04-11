@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Create Product</title>
+</head>
+<body>
+    <h2>Create Product</h2>
+    <form method="post">
+        <div>
+            <label>Product Name</label><br />
+            <input type="text" name="ProductName" />
+        </div>
+        <div>
+            <label>Price</label><br />
+            <input type="number" step="0.01" name="Price" />
+        </div>
+        <div>
+            <label>Quantity</label><br />
+            <input type="number" name="Quantity" />
+        </div>
+        <div>
+            <label>Status</label><br />
+            <select name="Status">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+        <div>
+            <label>Category</label><br />
+            <select name="CategoryId">
+                <option value="1">Electronics</option>
+                <option value="2">Clothing</option>
+                <option value="3">Food</option>
+            </select>
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit">Save</button>
+            <a href="">Back to List</a>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Student List</title>
+</head>
+<body>
+    <h2>Student List</h2>
+
+    <form method="get">
+        <label>Course</label>
+        <select name="courseId">
+            <option value="">All</option>
+            <option value="1">PRN222</option>
+            <option value="2">DBI202</option>
+            <option value="3">SWD392</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>StudentId</th>
+                <th>StudentName</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><a href="">Nguyen An</a></td>
+                <td>an@fpt.edu.vn</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

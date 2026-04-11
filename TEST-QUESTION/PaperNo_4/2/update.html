@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Employee</title>
+</head>
+<body>
+    <h2>Update Employee</h2>
+    <form method="post">
+        <div>
+            <label>Employee Name</label><br />
+            <input type="text" value="John Doe" readonly />
+        </div>
+        <div>
+            <label>Position</label><br />
+            <input type="text" name="Position" value="Senior Developer" />
+        </div>
+        <div>
+            <label>Department</label><br />
+            <select name="DepartmentId">
+                <option value="1" selected>Software Development</option>
+                <option value="2">Human Resources</option>
+                <option value="3">Quality Assurance</option>
+            </select>
+        </div>
+        <div>
+            <label>Hire Date</label><br />
+            <input type="date" name="HireDate" value="2010-03-01" />
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit">Save</button>
+            <a href="">Back to List</a>
+        </div>
+    </form>
+</body>
+</html>

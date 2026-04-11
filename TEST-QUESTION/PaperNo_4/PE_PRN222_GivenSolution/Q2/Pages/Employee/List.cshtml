@@ -1,0 +1,66 @@
+﻿@page
+@model Q2.Pages.Employee.ListModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Employee List</title>
+</head>
+<body>
+    <h2>Employee List</h2>
+
+    <form method="get">
+        <label>Department</label>
+        <select asp-for="DepartmentSelected">
+            <option value="" selected="@(string.IsNullOrEmpty(Model.DepartmentSelected))">All</option>
+            @for (int i = 0; i < Model.Departments.Count; i++)
+            {
+                var option = Model.Departments[i].DepartmentName;
+                if (string.Equals(Model.DepartmentSelected, option, StringComparison.OrdinalIgnoreCase))
+                {
+                    <option value="@option" selected>@option</option>
+                }
+                else
+                {
+                    <option value="@option">@option</option>
+                }
+            }
+        </select>
+
+        <label>Sort By</label>
+        <input type="radio" asp-for="SortSelected" value="Name" /> Name
+        <input type="radio" asp-for="SortSelected" value="HireDate" /> Hire Date
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Position</th>
+                <th>Department</th>
+                <th>Hire Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model.Employees)
+            {
+                <tr>
+                    <td>@e.EmployeeName</td>
+                    <td>@e.Position</td>
+                    <td>@e.Department.DepartmentName</td>
+                    <td>@e.HireDate</td>
+                    <td><a href="/Employee/Update/@e.EmployeeId">Update</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+

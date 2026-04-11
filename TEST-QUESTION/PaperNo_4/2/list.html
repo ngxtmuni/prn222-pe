@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Employee List</title>
+</head>
+<body>
+    <h2>Employee List</h2>
+
+    <form method="get">
+        <label>Department</label>
+        <select name="departmentId">
+            <option value="">All</option>
+            <option value="1">Software Development</option>
+            <option value="2">Human Resources</option>
+            <option value="3">Quality Assurance</option>
+        </select>
+
+        <label>Sort By</label>
+        <input type="radio" name="sortBy" value="EmployeeName" /> Name
+        <input type="radio" name="sortBy" value="HireDate" /> Hire Date
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Position</th>
+                <th>Department</th>
+                <th>Hire Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>John Doe</td>
+                <td>Senior Developer</td>
+                <td>Software Development</td>
+                <td>2010-03-01</td>
+                <td><a href="">Update</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

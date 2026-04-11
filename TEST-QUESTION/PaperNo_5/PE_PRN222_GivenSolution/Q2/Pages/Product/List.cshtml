@@ -1,0 +1,67 @@
+﻿@page
+@model Q2.Pages.Product.ListModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Product List</title>
+</head>
+<body>
+    <h2>Product List</h2>
+    <div><a href="/Product/Create">Add New Product</a></div>
+
+    <form method="get">
+        <label>Category</label>
+        <select asp-for="CategoryIdSelected">
+            <option value="" selected="@(Model.CategoryIdSelected == 0)">All</option>
+            @for (int i = 0; i < Model.Categories.Count; i++)
+            {
+                var option = Model.Categories[i];
+                if (Model.CategoryIdSelected == option.CategoryId)
+                {
+                    <option value="@option.CategoryId" selected>@option.CategoryName</option>
+                }
+                else
+                {
+                    <option value="@option.CategoryId">@option.CategoryName</option>
+                }
+            }
+        </select>
+
+        <label>Sort By</label>
+        <input type="radio" asp-for="SortSelected" value="Name" /> Name
+        <input type="radio" asp-for="SortSelected" value="Price" /> Price
+
+        <button type="submit">Apply</button>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.Products)
+            {
+                <tr>
+                    <td>@p.ProductName</td>
+                    <td>@p.Price</td>
+                    <td>@p.Quantity</td>
+                    <td>@p.Status</td>
+                    <td>@p.Category.CategoryName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+

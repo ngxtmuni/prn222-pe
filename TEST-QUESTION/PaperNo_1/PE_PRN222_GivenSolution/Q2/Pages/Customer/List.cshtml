@@ -1,0 +1,61 @@
+﻿@page
+@model Q2.Pages.Customer.ListModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Customer List</title>
+</head>
+<body>
+    <h2>Customer List</h2>
+
+    <div style="margin-bottom:12px;">
+        <form method="get">
+            <label for="sl_city">City</label>
+            <select asp-for="SelectedValue" name="city" id="sl_city">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.SelectedValue))">All</option>
+                @for (int i = 0; i < Model.Cities.Count; i++)
+                {
+                    var option = Model.Cities[i];
+                    if (string.Equals(Model.SelectedValue, option, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <option value="@option" selected>@option</option>
+                    }
+                    else
+                    {
+                        <option value="@option">@option</option>
+                    }
+                }
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>CustomerId</th>
+                <th>CustomerName</th>
+                <th>Email</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model.Customers)
+            {
+                <tr>
+                    <td>@c.CustomerId</td>
+                    <td>@c.CustomerName</td>
+                    <td>@c.Email</td>
+                    <td>@c.City</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+

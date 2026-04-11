@@ -1,0 +1,76 @@
+﻿@page
+@model Q2.Pages.Contract.CreateModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Create Contract</title>
+</head>
+<body>
+    <h2>Create Contract</h2>
+    <div asp-validation-summary="All" style="color:red;"></div>
+    <form method="post">
+        <div>
+            <label>Contract Title</label><br />
+            <input type="text" asp-for="ContractTitleSelected" />
+        </div>
+        <div>
+            <label>Property Type</label><br />
+            <select asp-for="PropertyTypeSelected">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.PropertyTypeSelected))">Select one</option>
+                @for (int i = 0; i < Model.Properties.Count; i++)
+                {
+                    var option = Model.Properties[i];
+                    if (string.Equals(Model.PropertyTypeSelected, option, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <option value="@option" selected>@option</option>
+                    }
+                    else
+                    {
+                        <option value="@option">@option</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <label>Signing Date</label><br />
+            <input type="date" asp-for="SigningDateSelected" />
+        </div>
+        <div>
+            <label>Expiration Date</label><br />
+            <input type="date" asp-for="ExpirationDateSelected" />
+        </div>
+        <div>
+            <label>Broker</label><br />
+            <select asp-for="BrokerIdSelected">
+                @for (int i = 0; i < Model.Brokers.Count; i++)
+                {
+                    var d = Model.Brokers[i];
+                    var isSelected = Model.BrokerIdSelected == d.BrokerId || (Model.BrokerIdSelected != 0 && i == 0);
+                    if (isSelected)
+                    {
+                        <option value="@d.BrokerId" selected>@d.FullName</option>
+                    }
+                    else
+                    {
+                        <option value="@d.BrokerId">@d.FullName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <label>Value</label><br />
+            <input type="number" asp-for="ValueSelected" />
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit">Save</button>
+            <a href="">Back to List</a>
+        </div>
+    </form>
+</body>
+</html>
+

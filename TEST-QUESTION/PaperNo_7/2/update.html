@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Update Book</title>
+</head>
+<body>
+    <h2>Update Book</h2>
+
+    <form method="post">
+        <div>
+            <label>Title</label><br />
+            <input type="text" name="Title" value="1984" />
+        </div>
+        <div>
+            <label>Publish Year</label><br />
+            <input type="number" name="PublishYear" value="1949" />
+        </div>
+        <div>
+            <label>Author</label><br />
+            <select name="AuthorId">
+                <option value="1" selected>George Orwell</option>
+                <option value="2">Jane Austen</option>
+                <option value="3">Harper Lee</option>
+            </select>
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit">Save</button>
+            <a href="">Back to List</a>
+        </div>
+    </form>
+</body>
+</html>

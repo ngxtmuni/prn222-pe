@@ -1,0 +1,23 @@
+﻿@page "{id:int}"
+@model Q2.Pages.Services.DetailModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Service Detail</title>
+</head>
+<body>
+    <h2>Service Detail</h2>
+    <p><strong>ServiceId:</strong> @Model.ServiceModel?.ServiceId</p>
+    <p><strong>Room Title:</strong> @Model.ServiceModel?.RoomTitle</p>
+    <p><strong>Fee Type:</strong> @Model.ServiceModel?.FeeType</p>
+    <p><strong>Price:</strong> @Model.ServiceModel?.Price</p>
+    <p><strong>Status:</strong> @Model.ServiceModel?.Status</p>
+    <p><strong>Description:</strong> @Model.ServiceModel?.Description</p>
+</body>
+</html>
+

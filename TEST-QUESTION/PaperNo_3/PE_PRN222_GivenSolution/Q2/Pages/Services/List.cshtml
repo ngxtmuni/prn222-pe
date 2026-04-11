@@ -1,0 +1,51 @@
+﻿@page
+@model Q2.Pages.Services.ListModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Service List</title>
+</head>
+<body>
+    <h2>Service List</h2>
+
+    <form method="get">
+        <div>
+            <label>Room Title</label>
+            <input type="text" asp-for="RoomTitleSelected" />
+        </div>
+        <div>
+            <label>Fee Type</label>
+            <input type="text" asp-for="FeeTypeSelected" />
+        </div>
+        <button type="submit">Search</button>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Room Title</th>
+                <th>Fee Type</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.Services)
+            {
+                <tr>
+                    <td><a href="/Services/Detail/@s.ServiceId">@s.RoomTitle</a></td>
+                    <td>@s.FeeType</td>
+                    <td>@s.Price</td>
+                    <td>@s.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+

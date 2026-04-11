@@ -186,6 +186,73 @@ Snippet:
     <input type="radio" asp-for="SortBy" value="ContractDate" /> ContractDate
     <br />
 
+    checkbox
+    @foreach (var item in Model.Books)
+    {
+        <input type="checkbox" name="SelectedBookIds" value="@item.BookId" />
+        <span>@item.Title</span>
+    }
+    [BindProperty]
+    public List<int> SelectedBookIds { get; set; } = new();
+
+    //example
+    1. Radio
+Dùng khi chỉ chọn 1.
+<input type="radio" asp-for="SortBy" value="Name" /> Name
+<input type="radio" asp-for="SortBy" value="Id" /> Id
+[BindProperty(SupportsGet = true)]
+public string? SortBy { get; set; }
+Ý chính
+- Nhiều radio cùng asp-for
+- Mỗi cái khác value
+- Chỉ nhận 1 giá trị cuối cùng được chọn
+2. Checkbox Bool
+Dùng khi field là bật/tắt, ví dụ IsActive, IsFulltime.
+<input type="checkbox" asp-for="IsActive" />
+<label asp-for="IsActive"></label>
+[BindProperty]
+public bool IsActive { get; set; }
+Ý chính
+- Cái này dùng asp-for rất ổn
+- Bind trực tiếp về bool
+3. Checkbox Multiple
+Dùng khi chọn nhiều dòng, nhiều category, nhiều book, nhiều role.
+@foreach (var book in Model.Books)
+{
+    <div>
+        <input type="checkbox" name="SelectedBookIds" value="@book.BookId" />
+        <span>@book.Title</span>
+    </div>
+}
+[BindProperty]
+public List<int> SelectedBookIds { get; set; } = new();
+Ý chính
+- Đây là chỗ khác radio
+- Không nên nghĩ nó giống radio hoàn toàn
+- Nhiều checkbox phải dùng cùng name
+- Server sẽ gom các value đã tick thành List<int> hoặc List<string>
+4. Select Một Giá Trị
+Dùng khi dropdown chọn 1.
+<select asp-for="DepartmentId">
+    <option value="1">IT</option>
+    <option value="2">HR</option>
+</select>
+[BindProperty(SupportsGet = true)]
+public int DepartmentId { get; set; }
+Ý chính
+- Dễ nhất cho chọn 1
+- Hay dùng cho filter hoặc create/update
+5. Select Multiple
+Dùng khi dropdown cho chọn nhiều.
+<select name="SelectedBookIds" multiple>
+    @foreach (var book in Model.Books)
+    {
+        <option value="@book.BookId">@book.Title</option>
+    }
+</select>
+[BindProperty]
+public List<int> SelectedBookIds { get; set; } = new();
+
     <input type="submit" value="Filter" />
 </form>
 ```
